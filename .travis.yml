@@ -7,8 +7,8 @@ julia:
   - 1.4
   - nightly
 install:
-  - pip install pyscf
-matrix:
+  - pip install --user pyscf
+jobs:
   allow_failures:
     - julia: nightly
   fast_finish: true
