@@ -7,7 +7,7 @@ julia:
   - 1.4
   - nightly
 install:
-  - pip install --user pyscf
+  - pip3 install --user pyscf
 jobs:
   allow_failures:
     - julia: nightly
