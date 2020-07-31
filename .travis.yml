@@ -10,7 +10,7 @@ env:
   global:
     - PYTHON=conda
 before_install:
-  - julia -e 'using Pkg; Pkg.add("Conda"); using Conda; Conda.add("pyscf")'
+  - julia -e 'using Pkg; Pkg.add("Conda"); using Conda; Conda.add("pyscf",channel="pyscf")'
 jobs:
   allow_failures:
     - julia: nightly
