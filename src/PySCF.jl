@@ -25,11 +25,6 @@ function get_4idx(i::Int,j::Int,k::Int,l::Int)
    index(ij,kl)
 end
 
-# Löwdin symmetric Orthogonalization (with A = X^(-1/2))
-function lowdinOrtho(A,B)
-   A' * B * A
-end
-
 # Calculation of the electronic structure of a molecule
 # with the help of PySCF to calculate AO integrals and hold molecular data
 # * Restricted Hartree-Fock
@@ -43,5 +38,6 @@ using Formatting: printfmt
 using LinearAlgebra: Diagonal, Hermitian, eigen, norm, tr, diag, dot
 
 #include ...
+include("scf.jl")
 
 end

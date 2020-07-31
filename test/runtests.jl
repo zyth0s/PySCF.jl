@@ -2,7 +2,10 @@ using Test
 
 import PySCF: get_4idx
 
-@testset "PySCF.jl" begin
-    # Write your tests here.
-    @test get_4idx(1,2,3,4) == 38
+@testset "Indexing functions" begin
+   @test get_4idx(1,2,3,4) == 38
 end
+
+
+include("test_scf.jl")
+

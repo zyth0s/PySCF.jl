@@ -1,4 +1,6 @@
 
+import PySCF: pyscf, pyscf_atom_from_xyz, get_4idx
+
 function buildFock(hcore,D,nao,eri)
    F = copy(hcore)
    for i in 1:nao, j in 1:nao, # add Gμν*P
@@ -10,10 +12,15 @@ function buildFock(hcore,D,nao,eri)
    F
 end
 
+# Löwdin symmetric Orthogonalization (with A = X^(-1/2))
+function lowdinOrtho(A,B)
+   A' * B * A
+end
+
 #########################################################################
 # Project #3: The Hartree-Fock self-consistent field (SCF) procedure.
 #########################################################################
-function scf_rhf(mol)
+function scf_rhf(mol; verbose=true)
    nelec = mol.nelectron
    nocc  = mol.nelectron ÷ 2 
    nao   = mol.nao_nr() |> n -> convert(Int,n) # why not converted ??!
@@ -63,8 +70,10 @@ function scf_rhf(mol)
    C         = zeros(nao,nao)
    DIISstack = [] # for DIIS
    Fstack    = [] # for DIIS
-   println(" Iter        E(elec)        E(tot)        ΔE(elec)         ΔP")
-   println("-----   --------------  -------------  ------------  -------------")
+   if verbose
+      println(" Iter        E(elec)        E(tot)        ΔE(elec)         ΔP")
+      println("-----   --------------  -------------  ------------  -------------")
+   end
 
    while abs(ΔE) > δE && iteri < itermax && ΔP > δP
 
@@ -145,34 +154,36 @@ function scf_rhf(mol)
       ΔE   = Eelec - oldEelec
       Emol = Eelec + enuc
 
-      printfmt(" {1:3d}  {2:14.8f}  {3:14.8f}  {4:14.8f} {5:14.8f}\n",
-                 iteri,   Eelec,       Emol,      ΔE   ,    ΔP)
+      if verbose
+         printfmt(" {1:3d}  {2:14.8f}  {3:14.8f}  {4:14.8f} {5:14.8f}\n",
+                    iteri,   Eelec,       Emol,      ΔE   ,    ΔP)
+      end
       ########################################################
       #10: TEST FOR CONVERGENCE: WHILE LOOP (go up)
       ########################################################
    end
    @assert iteri < itermax "NOT CONVERGED!!"
 
-   dipole = dipole_moment(2P,mol)
-   printfmt("The dipole moment (Debye): {1:8.4f} {2:8.4f} {3:8.4f}\n",dipole...)
-
-   # In RHF, D = 2P, an occupied spatial orbital means 2 elec, α and β
-   # PS is a "correct" representation of the 1RDM in AO basis
-   Mulliken = 1; Lowdin = 0.5
-   println("Mulliken population analysis")
-   population_analysis(2P,s,Mulliken,mol)
-   println("Löwdin population analysis")
-   population_analysis(2P,s,Lowdin,mol)
-
-   covalent_bond_order(P,s,mol)
-
-   rdm1 = fock_dirac_denmat(C,s,2P)
-   nelec_rdm1 = tr(rdm1)
-   @assert isapprox(nelec, nelec_rdm1, atol=1e-8)
-   printfmt("Population: {:.3f} elec \n", nelec_rdm1)
-
-   rdm2 = second_denmat(rdm1)
-   # TODO: energy from density matrices eqs. (224,227) Janos
+#   dipole = dipole_moment(2P,mol)
+#   printfmt("The dipole moment (Debye): {1:8.4f} {2:8.4f} {3:8.4f}\n",dipole...)
+#
+#   # In RHF, D = 2P, an occupied spatial orbital means 2 elec, α and β
+#   # PS is a "correct" representation of the 1RDM in AO basis
+#   Mulliken = 1; Lowdin = 0.5
+#   println("Mulliken population analysis")
+#   population_analysis(2P,s,Mulliken,mol)
+#   println("Löwdin population analysis")
+#   population_analysis(2P,s,Lowdin,mol)
+#
+#   covalent_bond_order(P,s,mol)
+#
+#   rdm1 = fock_dirac_denmat(C,s,2P)
+#   nelec_rdm1 = tr(rdm1)
+#   @assert isapprox(nelec, nelec_rdm1, atol=1e-8)
+#   printfmt("Population: {:.3f} elec \n", nelec_rdm1)
+#
+#   rdm2 = second_denmat(rdm1)
+#   # TODO: energy from density matrices eqs. (224,227) Janos
 
    Emol,e,C
 end
