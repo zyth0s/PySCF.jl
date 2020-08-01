@@ -8,4 +8,5 @@ end
 
 
 include("test_scf.jl")
+include("test_mp2.jl")
 

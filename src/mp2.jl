@@ -4,6 +4,8 @@
 #             Perturbation Theory (MP₂) Energy
 #########################################################################
 
+using PyCall: pyimport
+
 ########################################################
 #3: TRANSFORM THE TWO-ELECTRON INTEGRALS TO THE MO BASIS
 ########################################################
@@ -86,6 +88,8 @@ function short_mp2(e,C,eri,mol)
    emp2 = 0.0
    occupied =      1:nocc
    virtual  = nocc+1:nao
+   pyscf = pyimport("pyscf")
+   np = pyimport("numpy") # alternative: TensorOperations.jl, Einsum.jl,
    eri = pyscf.ao2mo.restore(1,eri,nao) # reshape
    eri_mo = np.einsum("pa,qi,rb,sj,pqrs->aibj",C[:,1:nocc],C,C[:,1:nocc],C,eri,optimize=true)
    @inbounds (
@@ -93,7 +97,7 @@ function short_mp2(e,C,eri,mol)
                  j in occupied, b in virtual
        eiajb, eibja = eri_mo[i,a,j,b],  eri_mo[i,b,j,a]
        emp2 += eiajb * (2.0eiajb-eibja) / (e[i]+e[j]-e[a]-e[b])
-    end )
+   end )
    emp2
 end
 
