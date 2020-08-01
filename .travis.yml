@@ -8,9 +8,9 @@ julia:
   - nightly
 env:
   global:
-    - PYTHON=conda
+    - PYTHON=python3
 before_install:
-  - julia -e 'using Pkg; Pkg.add("Conda"); using Conda; Conda.add("pyscf",channel="pyscf")'
+  - pip install pyscf
 jobs:
   allow_failures:
     - julia: nightly
