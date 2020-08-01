@@ -299,7 +299,7 @@ function extant_E_CCSD(occupied, virtual, fs, t1, t2, eri_smo)
    E_CCSD
 end
 
-function ccsd(e, C, eri)
+function ccsd(e, C, eri, mol; verbose=true)
 
    nao      = size(C)[1]
    nsmo     = 2nao
@@ -322,8 +322,10 @@ function ccsd(e, C, eri)
    Wmnij = zeros(nsmo,nsmo,nsmo,nsmo)
    Wabef = zeros(nsmo,nsmo,nsmo,nsmo)
    Wmbej = zeros(nsmo,nsmo,nsmo,nsmo)
-   println(" Iter     Ecorr(CCSD)        ΔE(CCSD)")
-   println("-----   --------------   --------------")
+   if verbose
+      println(" Iter     Ecorr(CCSD)        ΔE(CCSD)")
+      println("-----   --------------   --------------")
+   end
    while ΔE_CCSD > 1e-9 && iteri < itermax
       iteri += 1
       Fae,Fmi,Fme,Wmnij,Wabef,Wmbej = updateF_W!(Fae,Fmi,Fme,Wmnij,Wabef,Wmbej,occupied,virtual,t1,t2,fs,eri_smo)
@@ -331,7 +333,7 @@ function ccsd(e, C, eri)
       t2 = updateT2(occupied,virtual,t1,t2,fs,eri_smo,Fae,Fmi,Fme,Wmnij,Wabef,Wmbej)
       E_CCSD, oldE_CCSD = extant_E_CCSD(occupied,virtual,fs,t1,t2,eri_smo), E_CCSD
       ΔE_CCSD = abs(E_CCSD - oldE_CCSD)
-      printfmt("{1:5d}   {2:13.10f}   {3:13.10f}\n",iteri,E_CCSD,ΔE_CCSD)
+      verbose && printfmt("{1:5d}   {2:13.10f}   {3:13.10f}\n",iteri,E_CCSD,ΔE_CCSD)
    end
    @assert iteri < itermax "NOT CONVERGED!!"
    E_CCSD, E_MP2

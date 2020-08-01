@@ -37,8 +37,8 @@ end
 using Formatting: printfmt
 using LinearAlgebra: Diagonal, Hermitian, eigen, norm, tr, diag, dot
 
-#include ...
 include("scf.jl")
 include("mp2.jl")
+include("ccsd.jl")
 
 end
