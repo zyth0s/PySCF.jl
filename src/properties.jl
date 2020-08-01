@@ -1,4 +1,6 @@
 
+import PySCF: pyimport
+
 #########################################################################
 # Additional Concepts
 # also see: "Hartree-Fock methods of Quantum Chemistry" by Janos Angyan
@@ -15,11 +17,13 @@ function dipole_moment(D, mol)
    ao_dip = mol.intor_symmetric("int1e_r", comp=3)
    mol = mol.set_common_orig(common_orig_bak)
 
+   np = pyimport("numpy")
    el_dip   = real.(np.einsum("xij,ji->x", ao_dip, D))
    charges  = mol.atom_charges()
    coords   = mol.atom_coords()
    nucl_dip = np.einsum("i,ix->x", charges, coords)
    mol_dip  = nucl_dip - el_dip
+   pyscf = pyimport("pyscf")
    mol_dip *= pyscf.data.nist.AU2DEBYE
 end
 
@@ -86,7 +90,8 @@ and `D` is the density matrix in the basis of AO.
  """
 function fock_dirac_denmat(C,S,D)
    # C' S D S C
-   np.einsum("ji,jk,kl,lm,mn->in",C,S,D,S,C,optimize=true)
+   #np.einsum("ji,jk,kl,lm,mn->in",C,S,D,S,C,optimize=true)
+   C' * S * D * S * C
 end
 
 """

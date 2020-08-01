@@ -40,5 +40,6 @@ using LinearAlgebra: Diagonal, Hermitian, eigen, norm, tr, diag, dot
 include("scf.jl")
 include("mp2.jl")
 include("ccsd.jl")
+include("properties.jl")
 
 end
