@@ -41,7 +41,7 @@ In particular:
 * α = 1 => Mulliken doi:10.1063/1.1740588
 * α = ½ => Löwdin
 """
-function population_analysis(D,S,α,mol)
+function population_analysis(D,S,α,mol;verbose=true)
    s_α, s_mα = S^α, S^(1-α) # Matrix powers (via squaring)
    @assert isapprox(mol.nelectron, tr(s_α*D*s_mα), atol=1e-8) # eq. (363) Janos
    PopAO = diag(s_α * D * s_mα)
@@ -51,10 +51,13 @@ function population_analysis(D,S,α,mol)
       Q[a] -= PopAO[μ] # eqs. (362,364) Janos
    end
    Q += mol.atom_charges()
-   for a in eachindex(Q)
-      println(" Atom $a has charge $(Q[a])")
+   if verbose
+      for a in eachindex(Q)
+         println(" Atom $a has charge $(Q[a])")
+      end
    end
    @assert isapprox(sum(Q), mol.charge, atol=1e-8)
+   Q
 end
 
 function covalent_bond_order(P,S,mol)

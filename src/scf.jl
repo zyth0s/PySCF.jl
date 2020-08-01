@@ -174,17 +174,6 @@ function scf_rhf(mol; verbose=true)
    end
    @assert iteri < itermax "NOT CONVERGED!!"
 
-#   dipole = dipole_moment(2P,mol)
-#   printfmt("The dipole moment (Debye): {1:8.4f} {2:8.4f} {3:8.4f}\n",dipole...)
-#
-#   # In RHF, D = 2P, an occupied spatial orbital means 2 elec, α and β
-#   # PS is a "correct" representation of the 1RDM in AO basis
-#   Mulliken = 1; Lowdin = 0.5
-#   println("Mulliken population analysis")
-#   population_analysis(2P,s,Mulliken,mol)
-#   println("Löwdin population analysis")
-#   population_analysis(2P,s,Lowdin,mol)
-#
 #   covalent_bond_order(P,s,mol)
 #
 #   rdm1 = fock_dirac_denmat(C,s,2P)
