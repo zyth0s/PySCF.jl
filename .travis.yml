@@ -10,7 +10,7 @@ env:
   global:
     - PYTHON=python3
 before_install:
-  - pip install pyscf
+  - pip3 install pyscf
 jobs:
   allow_failures:
     - julia: nightly
