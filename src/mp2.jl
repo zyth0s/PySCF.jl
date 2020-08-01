@@ -6,6 +6,8 @@
 
 using PyCall: pyimport
 
+using TensorOperations: @tensor
+
 ########################################################
 #3: TRANSFORM THE TWO-ELECTRON INTEGRALS TO THE MO BASIS
 ########################################################
@@ -89,9 +91,9 @@ function short_mp2(e,C,eri,mol)
    occupied =      1:nocc
    virtual  = nocc+1:nao
    pyscf = pyimport("pyscf")
-   np = pyimport("numpy") # alternative: TensorOperations.jl, Einsum.jl,
    eri = pyscf.ao2mo.restore(1,eri,nao) # reshape
-   eri_mo = np.einsum("pa,qi,rb,sj,pqrs->aibj",C[:,1:nocc],C,C[:,1:nocc],C,eri,optimize=true)
+   Cocc = @view C[:,1:nocc]
+   @tensor eri_mo[a,i,b,j] := Cocc[p,a] * C[q,i] * Cocc[r,b] * C[s,j] * eri[p,q,r,s]
    @inbounds (
    for i in occupied, a in virtual,
                  j in occupied, b in virtual

@@ -6,7 +6,6 @@ using PyCall: pyimport
 pyscf = pyimport("pyscf")
 mp = pyimport("pyscf.mp")   # Had to import mp alone ??!
 cc = pyimport("pyscf.cc") # Had to import mp alone ??!
-#np = pyimport("numpy") # alternative: TensorOperations.jl, Einsum.jl,
 
 import PySCF: scf_rhf, mymp2, short_mp2, ccsd
 
@@ -39,9 +38,9 @@ function benchmark_h2o_sto3g()
 
    eri   = mol.intor("cint2e_sph", aosym="s8")
    println()
-   e_mp2_me1   = @time mymp2(e,C,eri,mol,alg=:ao2mo_noddy) # Naive  ao2mo with my MP₂
-   e_mp2_me2   = @time mymp2(e,C,eri,mol,alg=:ao2mo_smart) # Smart  ao2mo with my MP₂
-   e_mp2_me3   = @time short_mp2(e,C,eri,mol)              # einsum ao2mo with my MP₂
+   e_mp2_me1   = @time mymp2(e,C,eri,mol,alg=:ao2mo_noddy) # Naive loop  ao2mo with my MP₂
+   e_mp2_me2   = @time mymp2(e,C,eri,mol,alg=:ao2mo_smart) # Smart loop  ao2mo with my MP₂
+   e_mp2_me3   = @time short_mp2(e,C,eri,mol)              # @tensor     ao2mo with my MP₂
    e_mp2_pyscf = @time mp.MP2(mf).kernel()[1]              # pure PySCF MP₂ solution
    println()
 

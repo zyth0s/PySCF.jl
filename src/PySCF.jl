@@ -6,7 +6,6 @@ using PyCall: pyimport
 pyscf = pyimport("pyscf")
 mp = pyimport("pyscf.mp")   # Had to import mp alone ??!
 cc = pyimport("pyscf.cc") # Had to import mp alone ??!
-np = pyimport("numpy") # alternative: TensorOperations.jl, Einsum.jl,
 
 # Utilities
 function pyscf_atom_from_xyz(fpath::String)

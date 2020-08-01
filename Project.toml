@@ -7,6 +7,7 @@ version = "0.1.0"
 Formatting = "59287772-0a20-5a39-b81b-1366585eb4c0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+TensorOperations = "6aa20fa7-93e2-5fca-9bc0-fbd0db3c71a2"
 
 [compat]
 julia = "1"

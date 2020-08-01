@@ -1,6 +1,8 @@
 
 import PySCF: pyimport
 
+using TensorOperations: @tensor
+
 #########################################################################
 # Additional Concepts
 # also see: "Hartree-Fock methods of Quantum Chemistry" by Janos Angyan
@@ -17,14 +19,14 @@ function dipole_moment(D, mol)
    ao_dip = mol.intor_symmetric("int1e_r", comp=3)
    mol = mol.set_common_orig(common_orig_bak)
 
-   np = pyimport("numpy")
-   el_dip   = real.(np.einsum("xij,ji->x", ao_dip, D))
+   @tensor el_dip[x] := ao_dip[x,i,j] * D[i,j]
+   el_dip = real.(el_dip)
    charges  = mol.atom_charges()
    coords   = mol.atom_coords()
-   nucl_dip = np.einsum("i,ix->x", charges, coords)
+   nucl_dip = vec(sum(charges .* coords, dims=1))
    mol_dip  = nucl_dip - el_dip
-   pyscf = pyimport("pyscf")
-   mol_dip *= pyscf.data.nist.AU2DEBYE
+   _au2debye = 2.5417464157449032
+   mol_dip *= _au2debye
 end
 
 # Population Analysis/Atomic Charges
@@ -92,8 +94,6 @@ Therefore it is idempotent. And it is called Fock-Dirac density matrix.
 and `D` is the density matrix in the basis of AO.
  """
 function fock_dirac_denmat(C,S,D)
-   # C' S D S C
-   #np.einsum("ji,jk,kl,lm,mn->in",C,S,D,S,C,optimize=true)
    C' * S * D * S * C
 end
 
