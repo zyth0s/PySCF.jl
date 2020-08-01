@@ -17,8 +17,8 @@ pyscf = pyimport("pyscf")
 
    mf = pyscf.scf.RHF(mol)
 
-   e_rhf_me, e, C = scf_rhf(mol,verbose=false)
-   e_rhf_pyscf    = mf.kernel()
+   rhf         = scf_rhf(mol,verbose=false)
+   e_rhf_pyscf = mf.kernel()
 
-   @test isapprox(e_rhf_pyscf, e_rhf_me, atol=1e-10)
+   @test isapprox(e_rhf_pyscf, rhf.Emol, atol=1e-10)
 end

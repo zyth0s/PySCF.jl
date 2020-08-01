@@ -1,6 +1,16 @@
 
 import PySCF: pyscf, pyscf_atom_from_xyz, get_4idx
 
+abstract type HartreeFockModel end
+
+struct RestrictedHartreeFock <: HartreeFockModel
+   Emol
+   e
+   C
+   #S
+   #D
+end
+
 function buildFock(hcore,D,nao,eri)
    F = copy(hcore)
    for i in 1:nao, j in 1:nao, # add Gμν*P
@@ -185,6 +195,6 @@ function scf_rhf(mol; verbose=true)
 #   rdm2 = second_denmat(rdm1)
 #   # TODO: energy from density matrices eqs. (224,227) Janos
 
-   Emol,e,C
+   RestrictedHartreeFock(Emol,e,C)
 end
 
