@@ -24,7 +24,6 @@ function benchmark_h2o_sto3g()
 
    mf = pyscf.scf.RHF(mol)
 
-   #e_rhf_me, e, C = scf_rhf(mol)
    rhf = scf_rhf(mol,verbose=false)
    e_rhf_me, e, C = rhf.Emol, rhf.e, rhf.C
    e_rhf_pyscf    = mf.kernel()
@@ -35,6 +34,7 @@ function benchmark_h2o_sto3g()
    println( "        -------------")
    printfmt(" ME:    {1:13.8f}  \n", e_rhf_me)
    printfmt(" PySCF: {1:13.8f}  \n", e_rhf_pyscf)
+
 
    eri   = mol.intor("cint2e_sph", aosym="s8")
    println()

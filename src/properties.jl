@@ -62,7 +62,7 @@ function population_analysis(D,S,α,mol;verbose=true)
    Q
 end
 
-function covalent_bond_order(P,S,mol)
+function _covalent_bond_order(P,S,mol)
    natm = mol.natm
    nelec = mol.nelectron
    @show nelec
@@ -130,7 +130,7 @@ end
 """
 2RD
 """
-function second_reduced_density(rdm1)
+function _second_reduced_density(rdm1)
    #rdm2D = zeros(nao,nao)
    #for i in 1:nao, j in 1:nao
    rdm2D = similar(rdm1)
@@ -143,7 +143,7 @@ end
 """
 2RDM
 """
-function second_denmat(D)
+function _second_denmat(D)
    # Choose convention: McWeeny or Löwdin (0.5 factor)
    # Clearly explained in sections 11.15, 13.3 of Janos Angyan notes
    #rdm2 = zeros(nsmo,nsmo,nsmo,nsmo)
@@ -168,6 +168,6 @@ end
 """
 2RDM Coulomb part (J to distinguish from c for correlation)
 """
-function second_denmat_j(D)
+function _second_denmat_j(D)
    @tensor rdm2_j[i,j,k,l] := D[i,j] * D[k,l]
 end
